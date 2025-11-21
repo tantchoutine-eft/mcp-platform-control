@@ -1,0 +1,20 @@
+{
+  "database-server-name": {
+    "command": "C:\\Users\\Tim\\.local\\bin\\uvx.exe",
+    "args": [
+      "awslabs.mysql-mcp-server@latest",
+      "--hostname", "YOUR_RDS_ENDPOINT",
+      "--secret_arn", "YOUR_SECRET_ARN",
+      "--database", "YOUR_DATABASE_NAME",
+      "--region", "us-east-1",
+      "--readonly", "True"
+    ],
+    "env": {
+      "AWS_PROFILE": "aws-sso-primary",
+      "AWS_REGION": "us-east-1",
+      "FASTMCP_LOG_LEVEL": "ERROR"
+    },
+    "disabled": false,
+    "autoApprove": []
+  }
+}

@@ -1,0 +1,152 @@
+name: MCP Configuration Validation
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '0 0 * * 0'  # Weekly validation
+
+jobs:
+  validate-configs:
+    runs-on: windows-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.13'
+    
+    - name: Install UV
+      run: |
+        powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
+        echo "$HOME\.local\bin" >> $GITHUB_PATH
+    
+    - name: Validate JSON Configs
+      run: |
+        $configs = Get-ChildItem -Path configs -Filter "*.json" -Recurse
+        $errors = 0
+        foreach ($config in $configs) {
+          try {
+            $null = Get-Content $config.FullName -Raw | ConvertFrom-Json
+            Write-Host "✅ Valid: $($config.Name)"
+          } catch {
+            Write-Host "❌ Invalid: $($config.Name) - $_"
+            $errors++
+          }
+        }
+        if ($errors -gt 0) { exit 1 }
+      shell: pwsh
+    
+    - name: Test MCP Server Packages
+      run: |
+        $servers = @(
+          "awslabs.core-mcp-server",
+          "awslabs.cdk-mcp-server",
+          "awslabs.aws-pricing-mcp-server",
+          "awslabs.aws-api-mcp-server",
+          "awslabs.bedrock-kb-retrieval-mcp-server",
+          "awslabs.nova-canvas-mcp-server",
+          "awslabs.mysql-mcp-server"
+        )
+        
+        foreach ($server in $servers) {
+          uvx $server@latest --help
+          if ($LASTEXITCODE -ne 0) {
+            Write-Host "❌ Failed: $server"
+            exit 1
+          }
+          Write-Host "✅ Passed: $server"
+        }
+      shell: pwsh
+    
+    - name: Run Security Audit
+      run: |
+        .\scripts\security-audit.ps1
+      shell: pwsh
+      continue-on-error: true
+    
+    - name: Generate Test Report
+      if: always()
+      run: |
+        $report = @{
+          Timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+          Repository = "${{ github.repository }}"
+          Branch = "${{ github.ref }}"
+          Commit = "${{ github.sha }}"
+          Status = "Completed"
+        }
+        $report | ConvertTo-Json | Set-Content test-report.json
+      shell: pwsh
+    
+    - name: Upload Test Results
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: test-results
+        path: |
+          test-report.json
+          logs/*.json
+
+  documentation-check:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Check Documentation
+      run: |
+        # Check for required documentation files
+        required_files=("README.md" "docs/troubleshooting.md" "docs/server-list.md")
+        for file in "${required_files[@]}"; do
+          if [ ! -f "$file" ]; then
+            echo "❌ Missing required documentation: $file"
+            exit 1
+          fi
+          echo "✅ Found: $file"
+        done
+    
+    - name: Validate Markdown
+      uses: DavidAnson/markdownlint-cli2-action@v11
+      with:
+        config: '.markdownlint.json'
+        globs: |
+          README.md
+          docs/*.md
+      continue-on-error: true
+
+  powershell-analysis:
+    runs-on: windows-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Install PSScriptAnalyzer
+      run: Install-Module -Name PSScriptAnalyzer -Force -Scope CurrentUser
+      shell: pwsh
+    
+    - name: Analyze PowerShell Scripts
+      run: |
+        $scripts = Get-ChildItem -Path scripts -Filter "*.ps1" -Recurse
+        $issues = 0
+        
+        foreach ($script in $scripts) {
+          Write-Host "Analyzing: $($script.Name)"
+          $results = Invoke-ScriptAnalyzer -Path $script.FullName -Severity Warning,Error
+          
+          if ($results) {
+            Write-Host "Issues found in $($script.Name):"
+            $results | Format-Table -AutoSize
+            $issues += $results.Count
+          } else {
+            Write-Host "✅ No issues in $($script.Name)"
+          }
+        }
+        
+        if ($issues -gt 0) {
+          Write-Host "⚠️ Total issues found: $issues"
+        }
+      shell: pwsh

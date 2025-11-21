@@ -1,0 +1,62 @@
+# MCP Project .gitignore
+
+# Sensitive configurations (create .example versions instead)
+configs/mcp-local.json
+configs/*.local.json
+
+# AWS credentials - NEVER commit these
+.aws/
+aws-credentials.txt
+*.pem
+*.key
+
+# Secrets
+secrets/
+*.secret
+*-secret.json
+.env
+.env.local
+
+# Cache and temporary files
+*.cache
+*.tmp
+temp/
+tmp/
+__pycache__/
+*.pyc
+
+# Logs
+*.log
+logs/
+output/
+
+# UV/Python
+.uv/
+.venv/
+venv/
+.Python
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Backup files
+*.bak
+*.backup
+*.old
+
+# Test outputs
+test-results/
+coverage/
+
+# Personal notes (but keep docs/)
+personal-notes.md
+TODO.md

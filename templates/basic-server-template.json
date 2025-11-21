@@ -1,0 +1,13 @@
+{
+  "server-name": {
+    "command": "C:\\Users\\Tim\\.local\\bin\\uvx.exe",
+    "args": ["awslabs.package-name@latest"],
+    "env": {
+      "AWS_PROFILE": "aws-sso-primary",
+      "AWS_REGION": "us-east-1",
+      "FASTMCP_LOG_LEVEL": "ERROR"
+    },
+    "disabled": false,
+    "autoApprove": []
+  }
+}

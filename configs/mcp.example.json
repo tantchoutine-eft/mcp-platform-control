@@ -1,0 +1,88 @@
+{
+  "mcpServers": {
+    "aws-core": {
+      "command": "C:\\Users\\YOUR_USERNAME\\.local\\bin\\uvx.exe",
+      "args": ["awslabs.core-mcp-server@latest"],
+      "env": {
+        "AWS_PROFILE": "your-aws-profile",
+        "AWS_REGION": "us-east-1",
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
+      "autoApprove": [],
+      "disabled": false
+    },
+    "aws-cdk": {
+      "command": "C:\\Users\\YOUR_USERNAME\\.local\\bin\\uvx.exe",
+      "args": ["awslabs.cdk-mcp-server@latest"],
+      "env": {
+        "FASTMCP_LOG_LEVEL": "ERROR",
+        "AWS_PROFILE": "your-aws-profile",
+        "AWS_REGION": "us-east-1"
+      },
+      "autoApprove": [],
+      "disabled": false
+    },
+    "aws-pricing": {
+      "command": "C:\\Users\\YOUR_USERNAME\\.local\\bin\\uvx.exe",
+      "args": ["awslabs.aws-pricing-mcp-server@latest"],
+      "env": {
+        "AWS_PROFILE": "your-aws-profile",
+        "AWS_REGION": "us-east-1",
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
+      "autoApprove": [],
+      "disabled": false
+    },
+    "bedrock-kb": {
+      "command": "C:\\Users\\YOUR_USERNAME\\.local\\bin\\uvx.exe",
+      "args": ["awslabs.bedrock-kb-retrieval-mcp-server@latest"],
+      "env": {
+        "AWS_PROFILE": "your-aws-profile",
+        "AWS_REGION": "us-east-1",
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
+      "autoApprove": [],
+      "disabled": false
+    },
+    "nova-canvas": {
+      "command": "C:\\Users\\YOUR_USERNAME\\.local\\bin\\uvx.exe",
+      "args": ["awslabs.nova-canvas-mcp-server@latest"],
+      "env": {
+        "AWS_PROFILE": "your-aws-profile",
+        "AWS_REGION": "us-east-1",
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
+      "autoApprove": [],
+      "disabled": false
+    },
+    "mysql-aurora": {
+      "command": "C:\\Users\\YOUR_USERNAME\\.local\\bin\\uvx.exe",
+      "args": [
+        "awslabs.mysql-mcp-server@latest",
+        "--hostname", "YOUR_RDS_ENDPOINT.rds.amazonaws.com",
+        "--secret_arn", "arn:aws:secretsmanager:REGION:ACCOUNT:secret:SECRET_NAME",
+        "--database", "YOUR_DATABASE_NAME",
+        "--region", "us-east-1",
+        "--readonly", "True"
+      ],
+      "env": {
+        "AWS_PROFILE": "your-aws-profile",
+        "AWS_REGION": "us-east-1",
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
+      "disabled": false,
+      "autoApprove": []
+    },
+    "aws-api": {
+      "command": "C:\\Users\\YOUR_USERNAME\\.local\\bin\\uvx.exe",
+      "args": ["awslabs.aws-api-mcp-server@latest"],
+      "env": {
+        "AWS_PROFILE": "your-aws-profile",
+        "AWS_REGION": "us-east-1",
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
+      "disabled": false,
+      "autoApprove": []
+    }
+  }
+}

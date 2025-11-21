@@ -1,0 +1,179 @@
+# Domain Configuration - Maps logical services to physical resources
+# This is the heart of the canonical resource model
+
+# Payment Processing System
+galileo_notifications:
+  prod:
+    compute:
+      provider: aws
+      kind: asg
+      ref: galileo-notify-asg-prod
+      region: us-east-1
+      account: "654654560452"
+    database:
+      provider: aws
+      kind: rds
+      ref: galileo-notify-db-cluster-prod
+      region: us-east-1
+    cache:
+      provider: aws
+      kind: elasticache
+      ref: galileo-notify-redis-prod
+    monitoring:
+      dashboard: galileo-prod-dashboard
+      runbook: https://wiki.expanseft.com/galileo/runbooks
+  staging:
+    compute:
+      provider: aws
+      kind: asg
+      ref: galileo-notify-asg-staging
+      region: us-east-1
+      account: "381492229443"
+    database:
+      provider: aws
+      kind: rds
+      ref: galileo-notify-db-cluster-staging
+  dev:
+    compute:
+      provider: aws
+      kind: ec2
+      ref: galileo-notify-dev-instances
+      region: us-east-1
+      account: "537124940140"
+
+# Corporate Infrastructure
+corp_infrastructure:
+  prod:
+    domain_controllers:
+      provider: azure
+      kind: vm
+      refs:
+        - corpeftdc1
+        - corpeftdc2
+      resource_group: corp-infrastructure
+      subscription: prod
+    vpn_gateways:
+      provider: azure
+      kind: vng
+      ref: expanseft-vng-prod
+      resource_group: networking-prod
+    file_storage:
+      provider: azure
+      kind: files
+      ref: corpeftstrfslogix
+      resource_group: storage-prod
+
+# AVD (Azure Virtual Desktop)
+avd_infrastructure:
+  prod:
+    session_hosts:
+      provider: azure
+      kind: vm
+      refs:
+        - avd-sh-01
+        - avd-sh-02
+      resource_group: avd-prod
+      host_pool: expanseft-hp-prod
+    workspace:
+      provider: azure
+      kind: avd_workspace
+      ref: expanseft-ws-prod
+      resource_group: avd-prod
+
+# Security Infrastructure
+security_endpoints:
+  corporate:
+    workstations:
+      provider: sentinelone
+      site_id: corp-site-001
+      group: CORPEFT_Workstations
+      policy: PCI_Compliant
+    servers:
+      provider: sentinelone
+      site_id: corp-site-001
+      group: CORPEFT_Servers
+      policy: Server_Hardened
+  cde:  # Card Data Environment
+    workstations:
+      provider: sentinelone
+      site_id: cde-site-001
+      group: CSEFT_PCI_Workstations
+      policy: PCI_DSS_4_0
+    servers:
+      provider: sentinelone  
+      site_id: cde-site-001
+      group: CSEFT_PCI_Servers
+      policy: PCI_DSS_4_0_Server
+
+# Network Infrastructure
+network_links:
+  azure_to_onprem:
+    provider: cisco
+    kind: ipsec_tunnel
+    ref: azure-hub-to-dc01
+    local_endpoint: 20.185.106.126
+    remote_endpoint: 67.43.12.198
+    vpn_device: asa-5516-01
+  azure_to_aws:
+    provider: azure
+    kind: vnet_peering
+    ref: azure-aws-transit
+    local_vnet: hub-vnet
+    remote_vpc: vpc-0a1b2c3d4e5f
+
+# Data Platform
+data_warehouse:
+  prod:
+    compute:
+      provider: aws
+      kind: redshift
+      ref: expanseft-dw-prod
+      region: us-east-1
+    etl:
+      provider: aws
+      kind: glue
+      ref: expanseft-etl-jobs
+    storage:
+      provider: aws
+      kind: s3
+      ref: expanseft-data-lake-prod
+
+# API Gateway
+api_gateway:
+  prod:
+    gateway:
+      provider: aws
+      kind: apigw
+      ref: expanseft-api-prod
+      region: us-east-1
+    waf:
+      provider: aws
+      kind: wafv2
+      ref: expanseft-waf-prod
+    cdn:
+      provider: aws
+      kind: cloudfront
+      ref: expanseft-cdn-prod
+
+# Monitoring & Observability
+monitoring:
+  global:
+    metrics:
+      provider: aws
+      kind: cloudwatch
+      namespaces:
+        - AWS/EC2
+        - AWS/RDS
+        - AWS/Lambda
+        - Custom/Application
+    logs:
+      provider: aws
+      kind: cloudwatch_logs
+      log_groups:
+        - /aws/lambda/galileo
+        - /ecs/expanseft
+        - /aws/rds/cluster/galileo
+    tracing:
+      provider: aws
+      kind: xray
+      service_map: expanseft-services

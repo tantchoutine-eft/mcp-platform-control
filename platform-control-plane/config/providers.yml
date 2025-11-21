@@ -1,0 +1,220 @@
+# Provider Configuration
+# Defines how to connect to each infrastructure provider
+
+aws:
+  accounts:
+    prod: "654654560452"
+    staging: "381492229443"
+    dev: "537124940140"
+    security: "131087618144"
+    infrastructure: "211125547824"
+    logs: "213611281426"
+    management: "886089548523"
+  
+  # Use AWS SSO profiles
+  profiles:
+    prod: aws-sso-prod
+    staging: aws-sso-nonprod
+    dev: aws-sso-sandbox
+    security: aws-sso-security
+    infrastructure: aws-sso-infrastructure
+    logs: aws-sso-logs
+    management: aws-sso-primary
+  
+  default_region: us-east-1
+  
+  # Alternative regions
+  regions:
+    - us-east-1
+    - us-west-2
+    - eu-west-1
+  
+  # Service-specific settings
+  settings:
+    ec2:
+      default_instance_type: t3.medium
+      default_ami_pattern: "amzn2-ami-hvm-*"
+    rds:
+      default_backup_retention: 7
+      default_multi_az: true
+    s3:
+      default_encryption: AES256
+      versioning: true
+
+azure:
+  tenant_id: "your-tenant-id"
+  
+  subscriptions:
+    prod: "prod-subscription-id"
+    staging: "staging-subscription-id"
+    dev: "dev-subscription-id"
+  
+  # Service principal for automation
+  service_principals:
+    platform_control:
+      client_id: "${PLATFORM_AZURE_CLIENT_ID}"
+      client_secret: "${PLATFORM_AZURE_CLIENT_SECRET}"
+  
+  default_location: eastus
+  
+  locations:
+    - eastus
+    - westus2
+    - northeurope
+  
+  resource_groups:
+    infrastructure: corp-infrastructure
+    networking: networking-prod
+    avd: avd-prod
+    storage: storage-prod
+
+gcp:
+  projects:
+    prod: "expanseft-prod"
+    staging: "expanseft-staging"
+    dev: "expanseft-dev"
+  
+  # Service account for automation
+  service_account:
+    key_file: "${PLATFORM_GCP_KEY_FILE}"
+  
+  default_region: us-central1
+  
+  regions:
+    - us-central1
+    - us-east1
+    - europe-west1
+
+sentinelone:
+  # Main account settings
+  account_id: "${SENTINELONE_ACCOUNT_ID}"
+  api_token: "${SENTINELONE_API_TOKEN}"
+  api_url: "https://usea1-partners.sentinelone.net"
+  
+  # Site configuration
+  sites:
+    corp:
+      id: "corp-site-001"
+      name: "CORPEFT - Corporate"
+      policies:
+        workstation: "Corporate_Workstation_Policy"
+        server: "Corporate_Server_Policy"
+    cde:
+      id: "cde-site-001"  
+      name: "CSEFT - PCI Environment"
+      policies:
+        workstation: "PCI_DSS_4_0_Workstation"
+        server: "PCI_DSS_4_0_Server"
+    
+  # Alert settings
+  alert_rules:
+    critical_threats:
+      - ransomware
+      - trojan
+      - rootkit
+    auto_isolate:
+      - ransomware
+      - active_breach
+    
+  # Integration settings
+  integrations:
+    syslog:
+      enabled: true
+      server: "syslog.expanseft.local"
+      port: 514
+    email:
+      enabled: true
+      recipients:
+        - security@expanseft.com
+
+cisco:
+  # ASA Firewall
+  asa:
+    primary:
+      host: "67.43.12.198"
+      username: "${CISCO_ASA_USERNAME}"
+      password: "${CISCO_ASA_PASSWORD}"
+      enable_password: "${CISCO_ASA_ENABLE}"
+      port: 22
+      model: "ASA 5516-X"
+    backup:
+      host: "67.43.12.199"
+      username: "${CISCO_ASA_USERNAME}"
+      password: "${CISCO_ASA_PASSWORD}"
+      enable_password: "${CISCO_ASA_ENABLE}"
+  
+  # Meraki Dashboard
+  meraki:
+    api_key: "${MERAKI_API_KEY}"
+    org_id: "${MERAKI_ORG_ID}"
+    networks:
+      corp: "L_1234567890"
+      guest: "L_0987654321"
+  
+  # VPN Tunnels
+  vpn_tunnels:
+    azure_hub:
+      name: "AZURE-HUB-VPN"
+      type: "IPSec IKEv2"
+      local_subnet: "192.168.0.0/16"
+      remote_subnet: "10.30.0.0/16"
+      peer_ip: "20.185.106.126"
+    aws_transit:
+      name: "AWS-TRANSIT-VPN"
+      type: "IPSec IKEv2"
+      local_subnet: "192.168.0.0/16"
+      remote_subnet: "10.0.0.0/16"
+      peer_ip: "52.87.123.45"
+
+# Credential resolution settings
+credentials:
+  # How to resolve credentials
+  resolution_order:
+    - environment    # Environment variables first
+    - vault         # HashiCorp Vault
+    - secrets       # AWS/Azure Secrets
+    - config        # Config file (dev only)
+  
+  # Vault configuration
+  vault:
+    url: "${VAULT_URL}"
+    token: "${VAULT_TOKEN}"
+    path: "secret/platform-control"
+  
+  # AWS Secrets Manager
+  aws_secrets:
+    region: us-east-1
+    prefix: "platform-control/"
+  
+  # Azure Key Vault
+  azure_keyvault:
+    name: "expanseft-platform-kv"
+    resource_group: "security-prod"
+
+# Global settings
+global:
+  # Timeouts
+  timeouts:
+    api_call: 30
+    long_operation: 300
+    health_check: 10
+  
+  # Retry policy
+  retry:
+    max_attempts: 3
+    backoff_base: 2
+    max_backoff: 60
+  
+  # Rate limiting
+  rate_limits:
+    aws_api: 10  # calls per second
+    azure_api: 10
+    sentinelone_api: 5
+    cisco_api: 2
+  
+  # Audit settings
+  audit:
+    enabled: true
+    storage: s3
+    bucket: expanseft-platform-audit
+    retention_days: 90

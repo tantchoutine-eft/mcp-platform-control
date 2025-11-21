@@ -1,0 +1,88 @@
+{
+  "mcpServers": {
+    "aws-core": {
+      "command": "C:\\Users\\Tim\\.local\\bin\\uvx.exe",
+      "args": ["awslabs.core-mcp-server@latest"],
+      "env": {
+        "FASTMCP_LOG_LEVEL": "ERROR",
+        "AWS_PROFILE": "aws-sso-primary",
+        "AWS_REGION": "us-east-1"
+      },
+      "autoApprove": [],
+      "disabled": false
+    },
+    "aws-cdk": {
+      "command": "C:\\Users\\Tim\\.local\\bin\\uvx.exe",
+      "args": ["awslabs.cdk-mcp-server@latest"],
+      "env": {
+        "FASTMCP_LOG_LEVEL": "ERROR",
+        "AWS_PROFILE": "aws-sso-primary",
+        "AWS_REGION": "us-east-1"
+      },
+      "autoApprove": [],
+      "disabled": false
+    },
+    "aws-pricing": {
+      "command": "C:\\Users\\Tim\\.local\\bin\\uvx.exe",
+      "args": ["awslabs.aws-pricing-mcp-server@latest"],
+      "env": {
+        "AWS_PROFILE": "aws-sso-primary",
+        "AWS_REGION": "us-east-1",
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
+      "autoApprove": [],
+      "disabled": false
+    },
+    "bedrock-kb": {
+      "command": "C:\\Users\\Tim\\.local\\bin\\uvx.exe",
+      "args": ["awslabs.bedrock-kb-retrieval-mcp-server@latest"],
+      "env": {
+        "AWS_PROFILE": "aws-sso-primary",
+        "AWS_REGION": "us-east-1",
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
+      "autoApprove": [],
+      "disabled": false
+    },
+    "nova-canvas": {
+      "command": "C:\\Users\\Tim\\.local\\bin\\uvx.exe",
+      "args": ["awslabs.nova-canvas-mcp-server@latest"],
+      "env": {
+        "AWS_PROFILE": "aws-sso-primary",
+        "AWS_REGION": "us-east-1",
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
+      "autoApprove": [],
+      "disabled": false
+    },
+    "mysql-aurora": {
+      "command": "C:\\Users\\Tim\\.local\\bin\\uvx.exe",
+      "args": [
+        "awslabs.mysql-mcp-server@latest",
+        "--hostname", "expanseft-prototype.c32erjvbancm.us-east-1.rds.amazonaws.com",
+        "--secret_arn", "arn:aws:secretsmanager:us-east-1:886089548523:secret:rds!cluster-69ac45c2-259a-42ae-b5c0-392ef9fed20e-c2f3zf",
+        "--database", "avidpay",
+        "--region", "us-east-1",
+        "--readonly", "True"
+      ],
+      "env": {
+        "AWS_PROFILE": "aws-sso-primary",
+        "AWS_REGION": "us-east-1",
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
+      "disabled": false,
+      "autoApprove": []
+    },
+    "aws-api": {
+      "command": "C:\\Users\\Tim\\.local\\bin\\uvx.exe",
+      "args": ["awslabs.aws-api-mcp-server@latest"],
+      "env": {
+        "AWS_PROFILE": "aws-sso-primary",
+        "AWS_REGION": "us-east-1",
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
+      "disabled": false,
+      "autoApprove": []
+    }
+  }
+}

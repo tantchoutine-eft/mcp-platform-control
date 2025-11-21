@@ -1,0 +1,35 @@
+{
+  "// Instructions": "Add this to your Cursor MCP configuration at ~/.cursor/mcp.json",
+  
+  "mcpServers": {
+    "platform-hub": {
+      "command": "python",
+      "args": ["-m", "mcp_server.main"],
+      "cwd": "C:/Users/Tim/EFT_Dev_Projects/MCP/platform-control-plane",
+      "env": {
+        "PYTHONPATH": "C:/Users/Tim/EFT_Dev_Projects/MCP/platform-control-plane",
+        "PLATFORM_CONFIG_PATH": "config",
+        
+        "// AWS Credentials": "Using SSO profiles from ~/.aws/config",
+        "AWS_CONFIG_FILE": "C:/Users/Tim/.aws/config",
+        "AWS_SHARED_CREDENTIALS_FILE": "C:/Users/Tim/.aws/credentials",
+        
+        "// Platform Credentials": "Set these in your environment or .env file",
+        "PLATFORM_AWS_PROD_ROLE": "${PLATFORM_AWS_PROD_ROLE}",
+        "PLATFORM_AWS_STAGING_ROLE": "${PLATFORM_AWS_STAGING_ROLE}",
+        "PLATFORM_AZURE_CLIENT_ID": "${PLATFORM_AZURE_CLIENT_ID}",
+        "PLATFORM_AZURE_CLIENT_SECRET": "${PLATFORM_AZURE_CLIENT_SECRET}",
+        "SENTINELONE_API_TOKEN": "${SENTINELONE_API_TOKEN}",
+        "CISCO_ASA_USERNAME": "${CISCO_ASA_USERNAME}",
+        "CISCO_ASA_PASSWORD": "${CISCO_ASA_PASSWORD}"
+      },
+      "disabled": false,
+      "autoApprove": []
+    },
+    
+    "// Optional": "You can keep your existing MCP servers alongside the platform hub",
+    "// aws-core": "...",
+    "// aws-cdk": "...",
+    "// aws-pricing": "..."
+  }
+}
