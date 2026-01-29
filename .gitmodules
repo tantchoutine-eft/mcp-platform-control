@@ -1,0 +1,12 @@
+[submodule "m365-core-mcp"]
+	path = m365-core-mcp
+	url = https://github.com/tantchoutine-eft/m365-core-mcp.git
+[submodule "cdfmc-mcp"]
+	path = cdfmc-mcp
+	url = https://github.com/tantchoutine-eft/cdfmc-mcp.git
+[submodule "awslabs-mcp"]
+	path = awslabs-mcp
+	url = https://github.com/awslabs/mcp.git
+[submodule "microsoft-mcp"]
+	path = microsoft-mcp
+	url = https://github.com/microsoft/mcp.git
